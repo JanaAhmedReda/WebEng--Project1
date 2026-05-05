@@ -36,12 +36,31 @@ public class AdoptionService : IAdoptionService
 
         return new AdoptionReadDto
         {
+            UserId = savedApplication.UserId,
             PetId = savedApplication.PetId,
             PetName = savedApplication.Pet!.Name,
             AdopterName = savedApplication.User!.FirstName + " " + savedApplication.User.LastName,
             ApplicationDate = savedApplication.ApplicationDate,
             Status = savedApplication.Status
         };
+    }
+
+    public async Task<IEnumerable<AdoptionReadDto>> GetAllApplicationsAsync()
+    {
+        return await _context.AdoptionApplications
+            .Include(a => a.Pet)
+            .Include(a => a.User)
+            .AsNoTracking()
+            .Select(a => new AdoptionReadDto
+            {
+                UserId = a.UserId,
+                PetId = a.PetId,
+                PetName = a.Pet != null ? a.Pet.Name : "Unknown",
+                AdopterName = (a.User != null ? a.User.FirstName : "Unknown") + " " + (a.User != null ? a.User.LastName : "Unknown"),
+                ApplicationDate = a.ApplicationDate,
+                Status = a.Status
+            })
+            .ToListAsync();
     }
 
     public async Task<IEnumerable<AdoptionReadDto>> GetApplicationsByPetIdAsync(int petId)
@@ -53,6 +72,7 @@ public class AdoptionService : IAdoptionService
             .AsNoTracking()
             .Select(a => new AdoptionReadDto
             {
+                UserId = a.UserId,
                 PetId = a.PetId,
                 PetName = a.Pet != null ? a.Pet.Name : "Unknown",
                 AdopterName = (a.User != null ? a.User.FirstName : "Unknown") + " " + (a.User != null ? a.User.LastName : "Unknown"),
@@ -71,6 +91,7 @@ public class AdoptionService : IAdoptionService
             .AsNoTracking()
             .Select(a => new AdoptionReadDto
             {
+                UserId = a.UserId,
                 PetId = a.PetId,
                 PetName = a.Pet != null ? a.Pet.Name : "Unknown",
                 AdopterName = (a.User != null ? a.User.FirstName : "Unknown") + " " + (a.User != null ? a.User.LastName : "Unknown"),
@@ -88,6 +109,18 @@ public class AdoptionService : IAdoptionService
         if (application == null) return false;
 
         application.Status = status;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteApplicationAsync(int petId, string userId)
+    {
+        var application = await _context.AdoptionApplications
+            .FirstOrDefaultAsync(a => a.PetId == petId && a.UserId == userId);
+
+        if (application == null) return false;
+
+        _context.AdoptionApplications.Remove(application);
         await _context.SaveChangesAsync();
         return true;
     }

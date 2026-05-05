@@ -5,8 +5,7 @@ namespace Project1.Models
     public class ApplicationUser : IdentityUser
     {
         public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-
+        public string LastName { get; set; } = string.Empty;    public string? RequestedRole { get; set; } // Role requested during registration (pending admin approval)
         public List<AdoptionApplication> Applications { get; set; } = new List<AdoptionApplication>();
     }
 }

@@ -32,7 +32,7 @@ public class ShelterService : IShelterService
         var shelter = new Shelter { Name = dto.Name, Address = dto.Address };
         _context.Shelters.Add(shelter);
         await _context.SaveChangesAsync();
-        return new ShelterReadDto { Id = shelter.Id, Name = shelter.Name };
+        return new ShelterReadDto { Id = shelter.Id, Name = shelter.Name, Address = shelter.Address };
     }
 
     public async Task<ShelterReadDto?> GetShelterByIdAsync(int id)
@@ -46,6 +46,19 @@ public class ShelterService : IShelterService
                 Name = s.Name, 
                 Address = s.Address 
             }).FirstOrDefaultAsync();
+    }
+
+    public async Task<ShelterReadDto?> UpdateShelterAsync(int id, CreateShelterDto dto)
+    {
+        var shelter = await _context.Shelters.FindAsync(id);
+        if (shelter == null) return null;
+        
+        shelter.Name = dto.Name;
+        shelter.Address = dto.Address;
+        _context.Shelters.Update(shelter);
+        await _context.SaveChangesAsync();
+        
+        return new ShelterReadDto { Id = shelter.Id, Name = shelter.Name, Address = shelter.Address };
     }
 
     public async Task<bool> DeleteShelterAsync(int id)

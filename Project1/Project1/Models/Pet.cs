@@ -11,6 +11,9 @@ public class Pet
     public required string Name { get; set; }
     public string? Breed { get; set; }
     public int Age { get; set; }
+    
+    [StringLength(10)]
+    public string AgeUnit { get; set; } = "Years";
 
     [ForeignKey("Shelter")]
     public int ShelterId { get; set; }

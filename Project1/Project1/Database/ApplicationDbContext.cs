@@ -15,11 +15,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-        
         modelBuilder.Entity<AdoptionApplication>()
             .HasKey(aa => new { aa.PetId, aa.UserId });
 
-        
         modelBuilder.Entity<Pet>()
             .HasOne(p => p.PetProfile)
             .WithOne(pp => pp.Pet)

@@ -8,6 +8,8 @@ public interface IAdoptionService
     
     Task<AdoptionReadDto> ApplyForAdoptionAsync(ApplyDto applyDto);
     
+    Task<IEnumerable<AdoptionReadDto>> GetAllApplicationsAsync();
+    
     Task<IEnumerable<AdoptionReadDto>> GetApplicationsByPetIdAsync(int petId);
     
     
@@ -15,4 +17,6 @@ public interface IAdoptionService
     
     
     Task<bool> UpdateApplicationStatusAsync(int petId, string userId, string status);
+    
+    Task<bool> DeleteApplicationAsync(int petId, string userId);
 }

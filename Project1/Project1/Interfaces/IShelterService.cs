@@ -8,5 +8,6 @@ public interface IShelterService
     Task<IEnumerable<ShelterReadDto>> GetAllSheltersAsync();
     Task<ShelterReadDto?> GetShelterByIdAsync(int id);
     Task<ShelterReadDto> AddShelterAsync(CreateShelterDto shelterDto);
+    Task<ShelterReadDto?> UpdateShelterAsync(int id, CreateShelterDto shelterDto);
     Task<bool> DeleteShelterAsync(int id);
 }

@@ -19,6 +19,7 @@ public class PetController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous] // Anyone can view pets
     public async Task<IActionResult> GetAllPets()
     {
         
@@ -27,6 +28,7 @@ public class PetController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin,Employee,User")]
     public async Task<IActionResult> GetPetById(int id)
     {
         var pet = await _petService.GetPetByIdAsync(id);
@@ -35,7 +37,7 @@ public class PetController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin,Staff")] 
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> AddPet([FromBody] CreatePetDto petDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -45,7 +47,7 @@ public class PetController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> UpdatePet(int id, [FromBody] UpdatePetDto petDto)
     {
         var updated = await _petService.UpdatePetAsync(id, petDto);

@@ -226,6 +226,9 @@ namespace Project1.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("RequestedRole")
+                        .HasColumnType("text");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -258,6 +261,11 @@ namespace Project1.Migrations
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
+
+                    b.Property<string>("AgeUnit")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
 
                     b.Property<string>("Breed")
                         .HasColumnType("text");

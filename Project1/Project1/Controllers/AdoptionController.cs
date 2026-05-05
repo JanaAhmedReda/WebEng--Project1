@@ -17,7 +17,16 @@ public class AdoptionController : ControllerBase
         _adoptionService = adoptionService;
     }
 
+    [HttpGet("all")]
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> GetAllApplications()
+    {
+        var applications = await _adoptionService.GetAllApplicationsAsync();
+        return Ok(applications);
+    }
+
     [HttpPost("apply")]
+    [Authorize(Roles = "Admin,Employee,User")]
     public async Task<IActionResult> ApplyForAdoption([FromBody] ApplyDto dto)
     {
         var result = await _adoptionService.ApplyForAdoptionAsync(dto);
@@ -25,6 +34,7 @@ public class AdoptionController : ControllerBase
     }
 
     [HttpGet("pet/{petId}")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> GetApplicationsByPet(int petId)
     {
         var applications = await _adoptionService.GetApplicationsByPetIdAsync(petId);
@@ -32,17 +42,35 @@ public class AdoptionController : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
+    [Authorize(Roles = "Admin,Employee,User")]
     public async Task<IActionResult> GetUserApplications(string userId)
     {
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var isElevated = User.IsInRole("Admin") || User.IsInRole("Employee");
+        if (!isElevated && !string.Equals(currentUserId, userId, StringComparison.OrdinalIgnoreCase))
+        {
+            return Forbid();
+        }
+
         var applications = await _adoptionService.GetUserApplicationsAsync(userId);
         return Ok(applications);
     }
 
     [HttpPut("status")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> UpdateApplicationStatus([FromBody] UpdateAdoptionStatusDto dto)
     {
         var success = await _adoptionService.UpdateApplicationStatusAsync(dto.PetId, dto.UserId, dto.Status);
         if (!success) return NotFound();
         return Ok();
+    }
+
+    [HttpDelete("{petId}/{userId}")]
+    [Authorize(Roles = "Admin,Employee,User")]
+    public async Task<IActionResult> DeleteApplication(int petId, string userId)
+    {
+        var success = await _adoptionService.DeleteApplicationAsync(petId, userId);
+        if (!success) return NotFound();
+        return NoContent();
     }
 }
