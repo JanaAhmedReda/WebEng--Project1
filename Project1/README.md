@@ -2,7 +2,6 @@
 
 A full-stack web application for managing pet shelters, built with **React + Axios** frontend and **ASP.NET Core + PostgreSQL** backend. The system allows users to register, manage pets, shelters, and adoption applications with comprehensive role-based access control.
 
-**Status:** ✅ Production Ready | **Project 12 Score:** 100/100 (A+)
 
 ---
 
