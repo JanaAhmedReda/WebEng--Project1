@@ -71,6 +71,8 @@ export default function Account() {
       });
       setProfileValidationErrors({});
       setProfileSuccess('Profile updated successfully.');
+      // Clear success message after 3 seconds so user sees the updated display
+      setTimeout(() => setProfileSuccess(''), 3000);
     } catch (submitError) {
       const data = submitError?.response?.data;
       if (data?.message) {
@@ -135,6 +137,10 @@ export default function Account() {
               </button>
             </div>
           </form>
+
+          <hr className="my-4" />
+
+          <h2 className="h5 fw-semibold mb-3">Saved profile information</h2>
 
           <dl className="row mb-0">
             <dt className="col-sm-3">Email</dt>
