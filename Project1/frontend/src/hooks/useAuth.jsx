@@ -114,6 +114,16 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const updateProfile = async (payload) => {
+    const data = await authService.updateProfile(payload);
+    persistUser(data);
+    return data;
+  };
+
+  const changePassword = async (payload) => {
+    return authService.changePassword(payload);
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -122,6 +132,8 @@ export function AuthProvider({ children }) {
     register,
     logout,
     deleteAccount,
+    updateProfile,
+    changePassword,
     setUser: persistUser,
   };
 

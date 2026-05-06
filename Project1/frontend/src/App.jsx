@@ -7,6 +7,8 @@ import NotFound from './components/NotFound';
 import Home from './pages/Home';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import Account from './pages/account/Account';
+import ChangePassword from './pages/account/ChangePassword';
 import PetsList from './pages/pets/PetsList';
 import PetForm from './pages/pets/PetForm';
 import PetDetails from './pages/pets/PetDetails';
@@ -26,6 +28,22 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/account/password"
+            element={
+              <ProtectedRoute>
+                <ChangePassword />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin-only user management */}
           <Route

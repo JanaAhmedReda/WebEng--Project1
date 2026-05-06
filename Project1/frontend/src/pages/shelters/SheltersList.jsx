@@ -43,6 +43,7 @@ export default function SheltersList() {
 
   const { user } = useAuth();
   const canManage = user?.roles?.includes('Admin') || user?.roles?.includes('Employee');
+  const canDelete = user?.roles?.includes('Admin');
 
   if (loading) {
     return <Loading />;
@@ -83,9 +84,11 @@ export default function SheltersList() {
                         <Link to={`/shelters/${shelter.id}/edit`} className="btn btn-outline-secondary btn-sm">
                           Edit
                         </Link>
-                        <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => handleDelete(shelter.id)}>
-                          Delete
-                        </button>
+                        {canDelete && (
+                          <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => handleDelete(shelter.id)}>
+                            Delete
+                          </button>
+                        )}
                       </>
                     )}
                   </div>

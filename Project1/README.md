@@ -18,11 +18,13 @@ The Pet Shelter Management System is a complete web application that enables:
 ### Key Capabilities
 
 ✅ User registration and login with cookie-based authentication  
+✅ Manage account profile (edit first/last name, change password)  
 ✅ Browse pets with search functionality  
 ✅ View shelter information and available pets  
 ✅ Submit and manage adoption applications  
 ✅ Admin role request approval system  
 ✅ Role-based access control (User, Employee, Admin)  
+✅ Employee-only restrictions (e.g., can't delete shelters)  
 ✅ Complete CRUD operations for all models  
 ✅ Professional error handling and validation  
 ✅ Responsive design with Bootstrap 5  
@@ -54,6 +56,7 @@ The Pet Shelter Management System is a complete web application that enables:
 ### Frontend Features
 - **Seamless Navigation** - Single Page Application with React Router
 - **Protected Routes** - Role-based access control for all pages
+- **Account Management** - Edit profile, change password, view account details
 - **Form Validation** - Client-side validation with server error feedback
 - **State Management** - React hooks (useState, useEffect) with Context API
 - **Session Persistence** - Automatic login restoration via cookies
@@ -106,9 +109,9 @@ npm install
 npm run dev
 ```
 
-The frontend will be available at: `http://localhost:5173`
+The frontend will be available at: `http://localhost:3002` (or check the console for the actual port)
 
-**Note:** The frontend is configured to proxy API requests to `http://localhost:5081` (backend). Make sure the backend is running before testing API calls.
+**Note:** The frontend is configured to proxy API requests to `http://localhost:5081` (backend). The backend CORS policy allows requests from `http://localhost:3002`. Make sure the backend is running before testing API calls.
 
 ### 4. Build for Production
 ```bash
@@ -207,11 +210,19 @@ npm run dev
 Wait for: `Local: http://localhost:5173`
 
 **Now:**
-- Frontend available at: `http://localhost:5173`
+- Frontend available at: `http://localhost:3002` (check console for actual port)
 - Backend available at: `http://localhost:5081`
 - Swagger docs at: `http://localhost:5081/swagger`
 
-Open `http://localhost:5173` in your browser and start using the application!
+Open the frontend URL in your browser and start using the application!
+
+### Accessing Your Account
+
+After logging in, click the **Account** button in the top navigation bar to:
+- View your profile details (email, first/last name, assigned roles)
+- Edit your first and last name
+- Change your password
+- Delete your account
 
 ## API Routes Reference
 
@@ -224,10 +235,13 @@ All API endpoints are prefixed with `/api`. The frontend communicates with these
 | POST | `/auth/register` | Register a new user account | ❌ | - |
 | POST | `/auth/login` | Login with email & password | ❌ | - |
 | GET | `/auth/me` | Get current user session | ✅ | All |
+| PUT | `/auth/me` | Update profile (first/last name) | ✅ | All |
 | POST | `/auth/logout` | Logout (clear session) | ✅ | All |
-| GET | `/auth/role-requests` | Get pending role upgrade requests | ✅ | Admin only |
-| POST | `/auth/approve-role/{userId}` | Approve role request for user | ✅ | Admin only |
-| POST | `/auth/deny-role/{userId}` | Deny role request for user | ✅ | Admin only |
+| POST | `/auth/change-password` | Change account password | ✅ | All |
+| DELETE | `/auth/me` | Delete user account | ✅ | All |
+| GET | `/auth/role-requests` | Get pending role upgrade requests | ✅ | Admin, Employee |
+| POST | `/auth/role-requests/{userId}/approve` | Approve role request for user | ✅ | Admin, Employee |
+| POST | `/auth/role-requests/{userId}/deny` | Deny role request for user | ✅ | Admin, Employee |
 
 ### Pet Endpoints
 
@@ -259,7 +273,7 @@ All API endpoints are prefixed with `/api`. The frontend communicates with these
 | GET | `/shelters/{id}/pets` | Get all pets in shelter | ✅ | User, Employee, Admin |
 | POST | `/shelters` | Create new shelter | ✅ | Employee, Admin |
 | PUT | `/shelters/{id}` | Update shelter information | ✅ | Employee, Admin |
-| DELETE | `/shelters/{id}` | Delete shelter | ✅ | Admin only |
+| DELETE | `/shelters/{id}` | Delete shelter | ✅ | Admin only (Employees cannot delete) |
 
 **Shelter Model Fields:**
 - `id` - Unique identifier

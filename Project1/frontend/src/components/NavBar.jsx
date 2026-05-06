@@ -89,6 +89,9 @@ export default function NavBar() {
             {isAuthenticated ? (
               <>
                 <span className="text-white-50 small d-none d-lg-inline">{user?.email || 'Signed in'}</span>
+                <NavLink className="btn btn-outline-light btn-sm" to="/account">
+                  Account
+                </NavLink>
                 <button type="button" className="btn btn-outline-danger btn-sm" onClick={handleDeleteAccount}>
                   Delete account
                 </button>
