@@ -108,6 +108,12 @@ export function AuthProvider({ children }) {
     persistUser(null);
   };
 
+  const deleteAccount = async () => {
+    const data = await authService.deleteAccount();
+    persistUser(null);
+    return data;
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -115,6 +121,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    deleteAccount,
     setUser: persistUser,
   };
 

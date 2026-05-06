@@ -192,6 +192,33 @@ public async Task<IActionResult> Login([FromBody] LoginModelDto model) {
         return Ok(new { Message = "Logout successful" });
     }
 
+    [HttpDelete("me")]
+    [Authorize]
+    public async Task<IActionResult> DeleteCurrentUser()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized(new { Message = "User not found in claims" });
+        }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound(new { Message = "User not found" });
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            var errorMessages = result.Errors.Select(e => e.Description).ToList();
+            return BadRequest(new { message = string.Join("; ", errorMessages) });
+        }
+
+        Response.Cookies.Delete("jwt");
+        return Ok(new { Message = "Account deleted successfully" });
+    }
+
     private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
     {
         var claims = new List<Claim>

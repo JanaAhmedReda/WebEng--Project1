@@ -1,8 +1,9 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth.jsx';
 
 export default function NavBar() {
-  const { isAuthenticated, logout, user } = useAuth();
+  const { isAuthenticated, logout, deleteAccount, user } = useAuth();
+  const navigate = useNavigate();
   const roles = user?.roles ?? [];
   const isAdmin = roles.includes('Admin');
   const isEmployee = roles.includes('Employee');
@@ -12,6 +13,21 @@ export default function NavBar() {
 
   const handleLogout = async () => {
     await logout();
+  };
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm('Are you sure you want to permanently delete your account? This action cannot be undone.');
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteAccount();
+      navigate('/register');
+    } catch (error) {
+      const message = error?.response?.data?.message || error?.response?.data?.Message || 'Unable to delete account. Please try again.';
+      window.alert(message);
+    }
   };
 
   return (
@@ -73,6 +89,9 @@ export default function NavBar() {
             {isAuthenticated ? (
               <>
                 <span className="text-white-50 small d-none d-lg-inline">{user?.email || 'Signed in'}</span>
+                <button type="button" className="btn btn-outline-danger btn-sm" onClick={handleDeleteAccount}>
+                  Delete account
+                </button>
                 <button type="button" className="btn btn-outline-light btn-sm" onClick={handleLogout}>
                   Logout
                 </button>
