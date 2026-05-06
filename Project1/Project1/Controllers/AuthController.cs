@@ -263,14 +263,14 @@ public async Task<IActionResult> Login([FromBody] LoginModelDto model) {
         });
     }
 
-    // ADMIN: Get pending role requests (users who requested Employee/Admin role)
+    // ADMIN/EMPLOYEE: Get pending role requests (users who requested Employee/Admin role)
     [HttpGet("role-requests")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> GetPendingRoleRequests()
     {
         var users = _userManager.Users
-            .Where(u => !string.IsNullOrEmpty(u.RequestedRole))
-            .ToList();
+            .Where(u => !string.IsNullOrEmpty(u.RequestedRole)&& u.RequestedRole != "User")
+        .ToList();
 
         var requests = new List<object>();
         foreach (var user in users)
@@ -291,9 +291,9 @@ public async Task<IActionResult> Login([FromBody] LoginModelDto model) {
         return Ok(requests);
     }
 
-    // ADMIN: Approve a role request (change user's role to requested role)
+    // ADMIN/EMPLOYEE: Approve a role request (change user's role to requested role)
     [HttpPost("role-requests/{userId}/approve")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> ApproveRoleRequest(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -303,16 +303,17 @@ public async Task<IActionResult> Login([FromBody] LoginModelDto model) {
         if (string.IsNullOrEmpty(user.RequestedRole))
             return BadRequest(new { message = "User has no pending role request" });
 
+        var requestedRole = user.RequestedRole; // capture before clearing
         var currentRoles = await _userManager.GetRolesAsync(user);
         var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
         if (!removeResult.Succeeded)
             return BadRequest(new { message = "Failed to remove old roles" });
 
         // Ensure requested role exists
-        if (!await _roleManager.RoleExistsAsync(user.RequestedRole))
-            await _roleManager.CreateAsync(new IdentityRole(user.RequestedRole));
+        if (!await _roleManager.RoleExistsAsync(requestedRole))
+            await _roleManager.CreateAsync(new IdentityRole(requestedRole));
 
-        var addResult = await _userManager.AddToRoleAsync(user, user.RequestedRole);
+        var addResult = await _userManager.AddToRoleAsync(user, requestedRole);
         if (!addResult.Succeeded)
             return BadRequest(new { message = "Failed to add requested role" });
 
@@ -320,12 +321,12 @@ public async Task<IActionResult> Login([FromBody] LoginModelDto model) {
         user.RequestedRole = null;
         await _userManager.UpdateAsync(user);
 
-        return Ok(new { message = $"Approved request. User promoted to {user.RequestedRole}" });
+        return Ok(new { message = $"Approved request. User promoted to {requestedRole}" });
     }
 
     // ADMIN: Deny a role request (clear the requested role, keep user as User)
     [HttpPost("role-requests/{userId}/deny")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> DenyRoleRequest(string userId)
     {
         var user = await _userManager.FindByIdAsync(userId);

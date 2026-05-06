@@ -10,7 +10,7 @@ export default function RoleRequests() {
   const [success, setSuccess] = useState('');
   const [processing, setProcessing] = useState(null); // Track which request is being processed
 
-  const isAdmin = user?.roles?.includes('Admin');
+  const isAdminOrEmployee = user?.roles?.includes('Admin') || user?.roles?.includes('Employee');
 
   const loadRequests = async () => {
     setLoading(true);
@@ -28,9 +28,9 @@ export default function RoleRequests() {
   };
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!isAdminOrEmployee) return;
     loadRequests();
-  }, [isAdmin]);
+  }, [isAdminOrEmployee]);
 
   const handleApprove = async (userId, requestedRole) => {
     setProcessing(userId);
@@ -64,7 +64,7 @@ export default function RoleRequests() {
     }
   };
 
-  if (!isAdmin) return <div className="alert alert-danger">Admins only</div>;
+  if (!isAdminOrEmployee) return <div className="alert alert-danger">Admins or Employees only</div>;
   
   if (loading) {
     return (
