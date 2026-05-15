@@ -92,6 +92,9 @@ export function AuthProvider({ children }) {
     persistUser({
       id: data?.id ?? data?.Id,
       email: data?.email ?? data?.Email ?? credentials.email,
+      firstName: data?.firstName ?? data?.FirstName,
+      lastName: data?.lastName ?? data?.LastName,
+      phoneNumber: data?.phoneNumber ?? data?.PhoneNumber,
       roles,
     });
     return data;

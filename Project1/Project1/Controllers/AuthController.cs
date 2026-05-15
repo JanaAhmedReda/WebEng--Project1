@@ -120,7 +120,14 @@ public class AuthController : ControllerBase
                 var token = GenerateJwtToken(user, new List<string> { "User" });
                 SetTokenCookie(token);
                 Response.Headers["Authorization"] = $"Bearer {token}";
-                return Ok(new { Message = "User registered successfully" });
+                return Ok(new {
+                    Message = "User registered successfully",
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Roles = new List<string> { "User" }
+                });
             }
             
             // Return errors in a format the frontend can understand
@@ -151,6 +158,9 @@ public async Task<IActionResult> Login([FromBody] LoginModelDto model) {
         Message = "Login successful",
         Id = user.Id,
         Email = user.Email,
+        FirstName = user.FirstName,
+        LastName = user.LastName,
+        PhoneNumber = user.PhoneNumber,
         Roles = roles
     });
 }
