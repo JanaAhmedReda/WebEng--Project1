@@ -12,6 +12,7 @@ const normalizeAdoption = (application) => {
     petName: application.petName ?? application.PetName,
     adopterName: application.adopterName ?? application.AdopterName,
     applicationDate: application.applicationDate ?? application.ApplicationDate,
+    motivationMessage: application.motivationMessage ?? application.MotivationMessage,
     status: application.status ?? application.Status,
   };
 };

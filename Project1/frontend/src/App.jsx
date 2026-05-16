@@ -134,7 +134,7 @@ export default function App() {
           <Route
             path="/adoptions"
             element={
-              <ProtectedRoute allowedRoles={["Admin", "Employee"]} fallbackTo="/adoptions/new">
+              <ProtectedRoute>
                 <AdoptionsList />
               </ProtectedRoute>
             }

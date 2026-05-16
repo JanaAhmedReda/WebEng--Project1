@@ -12,6 +12,7 @@ export default function AdoptionsList() {
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -64,6 +65,15 @@ export default function AdoptionsList() {
     setSelectedApplication(application);
   };
 
+  const openDetails = (application) => {
+    setSelectedApplication(application);
+    setShowDetails(true);
+  };
+
+  const closeDetails = () => {
+    setShowDetails(false);
+  };
+
   return (
     <div className="vstack gap-4">
       <div className="d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -113,6 +123,8 @@ export default function AdoptionsList() {
                     {isStaff && <th>Applicant</th>}
                     {isStaff && <th>User ID</th>}
                     <th>Pet</th>
+                      <th>Reason</th>
+                      <th>Actions</th>
                     <th>Date</th>
                     <th>Status</th>
                   </tr>
@@ -139,6 +151,19 @@ export default function AdoptionsList() {
                       {isStaff && <td>{application.adopterName}</td>}
                       {isStaff && <td className="small text-muted">{application.userId}</td>}
                       <td>{application.petName}</td>
+                      <td className="text-truncate" style={{maxWidth: '240px'}}>{application.motivationMessage || '—'}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-primary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openDetails(application);
+                          }}
+                        >
+                          Details
+                        </button>
+                      </td>
                       <td>{formatDateTime(application.applicationDate)}</td>
                       <td>{application.status}</td>
                     </tr>
@@ -149,6 +174,44 @@ export default function AdoptionsList() {
           )}
         </div>
       </div>
+
+      {showDetails && selectedApplication && (
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style={{zIndex:1050}}>
+          <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark" style={{opacity:0.5}} onClick={closeDetails} />
+          <div className="card shadow-lg" style={{width: 'min(720px, 95%)', zIndex:1051}}>
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <h5 className="mb-0">Application details</h5>
+                <button className="btn-close" onClick={closeDetails} aria-label="Close" />
+              </div>
+
+              <dl className="row">
+                <dt className="col-sm-4">Applicant</dt>
+                <dd className="col-sm-8">{selectedApplication.adopterName || 'Unknown'}</dd>
+
+                <dt className="col-sm-4">User ID</dt>
+                <dd className="col-sm-8 small text-muted">{selectedApplication.userId}</dd>
+
+                <dt className="col-sm-4">Pet</dt>
+                <dd className="col-sm-8">{selectedApplication.petName}</dd>
+
+                <dt className="col-sm-4">Date</dt>
+                <dd className="col-sm-8">{formatDateTime(selectedApplication.applicationDate)}</dd>
+
+                <dt className="col-sm-4">Status</dt>
+                <dd className="col-sm-8">{selectedApplication.status}</dd>
+
+                <dt className="col-sm-4">Why do you want to adopt this pet?</dt>
+                <dd className="col-sm-8">{selectedApplication.motivationMessage || 'No response provided.'}</dd>
+              </dl>
+
+              <div className="d-flex justify-content-end">
+                <button className="btn btn-secondary" onClick={closeDetails}>Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -23,6 +23,7 @@ public class AdoptionService : IAdoptionService
             UserId = applyDto.AdopterId,
             ApplicationDate = applyDto.ApplicationDate,
             Status = "Pending"
+                ,MotivationMessage = applyDto.MotivationMessage
         };
 
         _context.AdoptionApplications.Add(application);
@@ -42,6 +43,7 @@ public class AdoptionService : IAdoptionService
             AdopterName = savedApplication.User!.FirstName + " " + savedApplication.User.LastName,
             ApplicationDate = savedApplication.ApplicationDate,
             Status = savedApplication.Status
+            ,MotivationMessage = savedApplication.MotivationMessage
         };
     }
 
@@ -58,7 +60,8 @@ public class AdoptionService : IAdoptionService
                 PetName = a.Pet != null ? a.Pet.Name : "Unknown",
                 AdopterName = (a.User != null ? a.User.FirstName : "Unknown") + " " + (a.User != null ? a.User.LastName : "Unknown"),
                 ApplicationDate = a.ApplicationDate,
-                Status = a.Status
+                Status = a.Status,
+                MotivationMessage = a.MotivationMessage
             })
             .ToListAsync();
     }
@@ -77,7 +80,8 @@ public class AdoptionService : IAdoptionService
                 PetName = a.Pet != null ? a.Pet.Name : "Unknown",
                 AdopterName = (a.User != null ? a.User.FirstName : "Unknown") + " " + (a.User != null ? a.User.LastName : "Unknown"),
                 ApplicationDate = a.ApplicationDate,
-                Status = a.Status
+                Status = a.Status,
+                MotivationMessage = a.MotivationMessage
             })
             .ToListAsync();
     }
@@ -96,7 +100,8 @@ public class AdoptionService : IAdoptionService
                 PetName = a.Pet != null ? a.Pet.Name : "Unknown",
                 AdopterName = (a.User != null ? a.User.FirstName : "Unknown") + " " + (a.User != null ? a.User.LastName : "Unknown"),
                 ApplicationDate = a.ApplicationDate,
-                Status = a.Status
+                Status = a.Status,
+                MotivationMessage = a.MotivationMessage
             })
             .ToListAsync();
     }

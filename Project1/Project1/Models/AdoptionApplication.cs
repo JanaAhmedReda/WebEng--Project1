@@ -14,4 +14,6 @@ public class AdoptionApplication
 
     public DateTime ApplicationDate { get; set; }
     public string Status { get; set; } = "Pending";
+    [MaxLength(500)]
+    public string? MotivationMessage { get; set; }
 }
